@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react"
 
-const isFalsy = (value:any) => (value === 0 ? false : !value);
+const isFalsy = (value:unknown) => (value === 0 ? false : !value);
 //在一个函数不能修改原对象
 export const cleanObject = (object:object) => {
   const result = JSON.parse(JSON.stringify(object));
@@ -34,7 +34,7 @@ const debaunce = (func:() => void,delay?:number) => {
 }
 
 //custom hook是因为我们需要使用其他的hook
-export const useDebaunce = (value:any,delay?:number ) => {
+export const useDebaunce = <V>(value:V,delay?:number ) => {
   //使用useState是因为我们需要react检测到value的变化
   const [debauncedValue,setDebauncedValue] = useState(value)
   //每次在value变化以后设置一个定时器
