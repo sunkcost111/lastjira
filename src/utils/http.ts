@@ -1,14 +1,15 @@
 import qs from "qs"
 import * as Auth from 'auth-provider'
+import {useAuth} from "../context/auth-context";
 
 //封装我们的异步请求，主要是对token进行持久化
 const apiUrl = process.env.REACT_APP_API_URL
 
 interface Config extends RequestInit {
   token?:string,
-  data:object
+  data?:object
 }
-export const http = (endpoint:string,{data,token,headers,...customConfig}:Config) => {
+export const http = (endpoint:string,{data,token,headers,...customConfig}:Config = {}) => {
   const config = {
     method:'GET',
     headers:{
@@ -39,4 +40,10 @@ export const http = (endpoint:string,{data,token,headers,...customConfig}:Config
               return Promise.reject(data)
             }
           })
+}
+
+export const useHttp = () => {
+  const {user} = useAuth()
+  //todo讲解TS操作符
+  return (...[endpoint,config]:Parameters<typeof http>) => http(endpoint,{...config,token:user?.token})
 }
