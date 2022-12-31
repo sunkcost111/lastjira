@@ -47,3 +47,5 @@ export const useHttp = () => {
   //todo讲解TS操作符
   return (...[endpoint,config]:Parameters<typeof http>) => http(endpoint,{...config,token:user?.token})
 }
+
+//keyof和typeof的区别一定要认清
