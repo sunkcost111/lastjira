@@ -33,7 +33,7 @@ const debaunce = (func:() => void,delay?:number) => {
   }
 }
 
-//custom hook是因为我们需要使用其他的hook
+//custom hook是因为我们需要使用其他的hook（个人见解）
 export const useDebaunce = <V>(value:V,delay?:number ) => {
   //使用useState是因为我们需要react检测到value的变化
   const [debauncedValue,setDebauncedValue] = useState(value)
