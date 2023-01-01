@@ -1,0 +1,9 @@
+html {
+  font-size: 62.5%;
+  /*    rem相对于我们的根节点 也就是html节点*/
+  /*    浏览器默认font-size为16px*/
+  /*    1rem = 16*62.5% = 10px*/
+}
+html body #root .App {
+  min-height: 100vh;
+}
