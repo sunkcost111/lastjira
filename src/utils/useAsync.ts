@@ -10,7 +10,11 @@ const defaultState:State<null> = {
   data:null,
   error:null
 }
-export const useAsync = <D>(initialState?:State<D>) => {
+const defaultConfig = {
+  throwOnError:false
+}
+export const useAsync = <D>(initialState?:State<D>,initialConfig?:typeof defaultConfig) => {
+  const config = {...defaultConfig,...initialConfig}
   const [state,setState] = useState<State<D>>({
     ...defaultState,
     ...initialState
@@ -38,7 +42,9 @@ export const useAsync = <D>(initialState?:State<D>) => {
       setData(data)
       return data
     }).catch(error => {
+      //catch会自己消化异常
       setError(error)
+      if(config.throwOnError){ return Promise.reject(error)}
       return error
     })
   }
