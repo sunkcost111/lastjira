@@ -1,19 +1,21 @@
 import {useEffect, useState} from "react"
 
 const isFalsy = (value:unknown) => (value === 0 ? false : !value);
+const isVoid = (value:unknown) => value === undefined || value === null || value === ''
 //在一个函数不能修改原对象
-export const cleanObject = (object:object) => {
+export const cleanObject = (object:{[key:string] : unknown}) => {
   const result = JSON.parse(JSON.stringify(object));
   Object.keys(result).forEach((key) => {
     const value = result[key];
     //当value为0时，会被误删除
-    if (isFalsy(value)) {
+    if (isVoid(value)) {
       delete result[key];
     }
   })
   return result
 }
 //进行初始化页面useEffect依赖为空数组的自定义hook
+//todo 依赖项加入callback无限循环？？？
 export const useMount = (callback:() => void)=>{
   useEffect(()=>{
     callback()
