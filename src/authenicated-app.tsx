@@ -5,29 +5,39 @@ import styled from '@emotion/styled'
 import {Row} from "components/lib";
 import {ReactComponent as SoftwareLogo} from 'assets/software-logo.svg'
 import {Dropdown,Menu} from "antd";
+import {Navigate, Route, Routes} from 'react-router'
+import {BrowserRouter} from 'react-router-dom'
+import {ProjectScreen} from 'screens/project/index'
 export const AuthenicatedApp = () => {
-  const {logout,user} = useAuth()
-  // @ts-ignore
   // @ts-ignore
   return <Container>
-    <Header between={true}>
-      <HeaderLeft gap={true}>
-        <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'} />
-        <h2>项目</h2>
-        <h2>用户</h2>
-      </HeaderLeft>
-      <HeaderRight>
-        <a onClick={logout}>
-          hi,{user?.name}
-        </a>
-      </HeaderRight>
-    </Header>
+    <PageHeader/>
     <Main>
-      <ProjectListScreen/>
+      <BrowserRouter>
+        <Routes>
+          <Route path={'/projects'} element={<ProjectListScreen/>}/>
+          <Route path={'/projects/:projectId/*'} element={<ProjectScreen/>}/>
+        </Routes>
+      </BrowserRouter>
     </Main>
   </Container>
 }
 
+const PageHeader = () => {
+  const {logout,user} = useAuth()
+  return <Header between={true}>
+    <HeaderLeft gap={true}>
+      <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'} />
+      <h2>项目</h2>
+      <h2>用户</h2>
+    </HeaderLeft>
+    <HeaderRight>
+      <a onClick={logout}>
+        hi,{user?.name}
+      </a>
+    </HeaderRight>
+  </Header>
+}
 //flex和grid很多功能可以互相使用
 //grid和flex的引用场景
 //1 一维布局用flex 二维布局用Grid
@@ -40,7 +50,6 @@ const Container = styled.div`
   grid-template-rows: 6rem 1fr;
   height: 100vh;
 `
-
 const Main = styled.div`
 `
 //grid-area是给子元素起名字
