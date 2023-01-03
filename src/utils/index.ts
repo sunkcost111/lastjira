@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react"
+import {useEffect, useRef, useState} from "react"
 
 const isFalsy = (value:unknown) => (value === 0 ? false : !value);
 const isVoid = (value:unknown) => value === undefined || value === null || value === ''
@@ -46,4 +46,23 @@ export const useDebaunce = <V>(value:V,delay?:number ) => {
     return ()=>clearTimeout(timeout)
   },[value,delay])
   return debauncedValue
+}
+//文档标题
+export const useDocumentTitle = (title:string,keepOnMount:boolean = true) => {
+  //初始时，页面加载为旧Title
+  const oldTitle = useRef(document.title).current
+  //useEffect加载后即为新Title
+  useEffect(()=>{
+    console.log(oldTitle);
+    document.title = title
+  },[title])
+
+  useEffect(()=>{
+    //页面卸载时，即为旧Title值，（闭包）
+    return () => {
+      if(keepOnMount === false){
+        document.title = oldTitle
+      }
+    }
+  },[oldTitle,keepOnMount])
 }

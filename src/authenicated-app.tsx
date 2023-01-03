@@ -17,7 +17,7 @@ export const AuthenicatedApp = () => {
         <h2>用户</h2>
       </HeaderLeft>
       <HeaderRight>
-        <a onClick={e => e.preventDefault()}>
+        <a onClick={logout}>
           hi,{user?.name}
         </a>
       </HeaderRight>
