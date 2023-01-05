@@ -19,6 +19,8 @@ export const useAsync = <D>(initialState?:State<D>,initialConfig?:typeof default
     ...defaultState,
     ...initialState
   })
+  //useState惰性初始化
+  const [reTry,setReTry] = useState(() => () => {})
   const setData = (data:D) => setState({
     data,
     stat:'success',
@@ -30,10 +32,15 @@ export const useAsync = <D>(initialState?:State<D>,initialConfig?:typeof default
     data:null
   })
   //run用来触发异步请求
-  const run = (promise:Promise<D>) => {
+  const run = (promise:Promise<D>,runConfig?:{reTry:() => Promise<D>}) => {
     if(!promise || !promise.then){
       throw new Error('请传入Promise类型数据')
     }
+    setReTry(() => () => {
+      if(runConfig?.reTry){
+        run(runConfig?.reTry(),runConfig)
+      }
+    })
     setState({
       ...state,
       stat:'loading'
@@ -56,6 +63,8 @@ export const useAsync = <D>(initialState?:State<D>,initialConfig?:typeof default
     run,
     setError,
     setData,
+    //重新调用run
+    reTry,
     ...state
   }
 }
