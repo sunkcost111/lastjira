@@ -1,6 +1,7 @@
 import qs from "qs"
 import * as Auth from 'auth-provider'
 import {useAuth} from "../context/auth-context";
+import {useCallback} from "react";
 
 //封装我们的异步请求，主要是对token进行持久化
 const apiUrl = process.env.REACT_APP_API_URL
@@ -45,7 +46,8 @@ export const http = (endpoint:string,{data,token,headers,...customConfig}:Config
 export const useHttp = () => {
   const {user} = useAuth()
   //todo讲解TS操作符
-  return (...[endpoint,config]:Parameters<typeof http>) => http(endpoint,{...config,token:user?.token})
+  return useCallback((...[endpoint,config]:Parameters<typeof http>) =>
+    http(endpoint,{...config,token:user?.token}),[user?.token])
 }
 
 //keyof和typeof的区别一定要认清
