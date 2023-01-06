@@ -1,39 +1,43 @@
-import React from "react"
+import React, {useState} from "react"
 import {ProjectListScreen} from "./screens/project-list";
 import {useAuth} from "./context/auth-context";
 import styled from '@emotion/styled'
-import {Row} from "components/lib";
+import {ButtonNoPadding, Row} from "components/lib";
 import {ReactComponent as SoftwareLogo} from 'assets/software-logo.svg'
 import {Button, Dropdown, Menu} from "antd";
 import { Route, Routes} from 'react-router'
 import {BrowserRouter,Navigate} from 'react-router-dom'
 import {ProjectScreen} from 'screens/project/index'
 import {resetRoute} from 'utils/index'
+import {ProjectModal} from "./screens/project-list/project-modal";
+import {ProjectPopover} from "./components/project-popover";
 export const AuthenicatedApp = () => {
+  const [projectModalOpen,setProjectModalOpen] = useState(false)
   // @ts-ignore
   return <Container>
-    <PageHeader/>
+    <PageHeader setProjectModalOpen={setProjectModalOpen} />
     <Main>
       <BrowserRouter>
         <Routes>
-          <Route path={'/projects'} element={<ProjectListScreen/>}/>
+          <Route path={'/projects'} element={<ProjectListScreen setProjectModalOpen={setProjectModalOpen} />}/>
           <Route path={'/projects/:projectId/*'} element={<ProjectScreen/>}/>
           <Route path={'/'} element={<Navigate to={'/projects'} />} />
         </Routes>
       </BrowserRouter>
     </Main>
+    <ProjectModal projectModalOPen={projectModalOpen} onClose={() => setProjectModalOpen(false)}/>
   </Container>
 }
 
-const PageHeader = () => {
+const PageHeader = (props:{setProjectModalOpen:(isOpen:boolean) => void}) => {
   const {logout,user} = useAuth()
   return <Header between={true}>
     <HeaderLeft gap={true}>
-      <Button type={'link'} onClick={resetRoute}>
+      <ButtonNoPadding type={'link'} onClick={resetRoute}>
         <SoftwareLogo width={'18rem'} color={'rgb(38,132,255)'} />
-      </Button>
-      <h2>项目</h2>
-      <h2>用户</h2>
+      </ButtonNoPadding>
+      <ProjectPopover setProjectModalOpen={props.setProjectModalOpen} />
+      <span>用户</span>
     </HeaderLeft>
     <HeaderRight>
       <a onClick={logout}>
@@ -68,3 +72,6 @@ const HeaderLeft = styled(Row)`
 `
 const HeaderRight = styled.div`
 `
+const User = () => {
+
+}

@@ -17,7 +17,6 @@ interface SearchPanelProps {
 }
 export const SearchPanel = ({users,param,setParam}:SearchPanelProps)=>{
 
-  console.log(11,param)
   return <Form style={{marginBottom:'2rem'}} layout={"inline"}>
     <Form.Item>
       <Input

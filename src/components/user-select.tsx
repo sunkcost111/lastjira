@@ -5,7 +5,6 @@ import {Select} from "antd";
 
 export const UserSelect = (props:React.ComponentProps<typeof IdSelect>) => {
   const {data:users}  = useUsers()
-  console.log('$',props)
   return <IdSelect options={users || []}
     {...props} />
 }

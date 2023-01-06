@@ -9,8 +9,9 @@ import {useProjects} from "../../utils/project";
 import {useUsers} from "../../utils/user";
 import {useUrlQueryParam} from "../../utils/url";
 import {useProjectSeacrhParams} from "./util";
+import {Row} from "../../components/lib";
 
-export const ProjectListScreen = ()=>{
+export const ProjectListScreen = (props:{setProjectModalOpen:(isOpen:boolean) => void})=>{
   useDocumentTitle('项目列表',false)
 
   //基本类型和组件状态维护的高级数据类型可以放在依赖里
@@ -19,12 +20,15 @@ export const ProjectListScreen = ()=>{
   const {data:users} = useUsers()
 
   return <Container>
-    <h1>项目列表</h1>
+    <Row between={true}>
+      <h1>项目列表</h1>
+      <Button onClick={() => props.setProjectModalOpen(true)}>创建项目</Button>
+    </Row>
     <SearchPanel param={param} setParam={setParam} users={users || [] } />
     {
       error ? <Typography.Text type={'danger'}>{error.message}</Typography.Text> : null
     }
-    <List refresh={reTry} dataSource={list || []} users={users || [] } loading={isLoading} />
+    <List refresh={reTry} dataSource={list || []} users={users || [] } loading={isLoading} setProjectModalOpen={props.setProjectModalOpen} />
   </Container>
 }
 ProjectListScreen.whyDidYouRender = false
