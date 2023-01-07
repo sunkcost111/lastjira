@@ -1,4 +1,4 @@
-import {useCallback, useState} from "react";
+import {useCallback, useReducer, useState} from "react";
 import {useMountedRef} from "./index";
 
 interface State <D>{
@@ -16,23 +16,23 @@ const defaultConfig = {
 }
 export const useAsync = <D>(initialState?:State<D>,initialConfig?:typeof defaultConfig) => {
   const config = {...defaultConfig,...initialConfig}
-  const [state,setState] = useState<State<D>>({
+  const [state,dispatch] = useReducer((state:State<D>,action:Partial<State<D>>) => ({...state,...action}),{
     ...defaultState,
     ...initialState
   })
-  const mountedRef = useMountedRef()
+  const safeDispatch = useSafeDispatch(dispatch)
   //useState惰性初始化
   const [reTry,setReTry] = useState(() => () => {})
-  const setData = useCallback((data:D) => setState({
+  const setData = useCallback((data:D) => safeDispatch({
     data,
     stat:'success',
     error:null
-  }),[])
-  const setError = useCallback((error:Error) => setState({
+  }),[safeDispatch])
+  const setError = useCallback((error:Error) => safeDispatch({
     error,
     stat:'error',
     data:null
-  }),[])
+  }),[safeDispatch])
   //run用来触发异步请求
   const run = useCallback((promise:Promise<D>,runConfig?:{reTry:() => Promise<D>}) => {
     if(!promise || !promise.then){
@@ -43,14 +43,9 @@ export const useAsync = <D>(initialState?:State<D>,initialConfig?:typeof default
         run(runConfig?.reTry(),runConfig)
       }
     })
-    setState(prevState => ({
-      ...prevState,
-      stat:'loading'
-    }))
+    safeDispatch({stat:'loading'})
     return promise.then(data => {
-      if(mountedRef.current){
-        setData(data)
-      }
+      setData(data)
       return data
     }).catch(error => {
       //catch会自己消化异常
@@ -58,7 +53,7 @@ export const useAsync = <D>(initialState?:State<D>,initialConfig?:typeof default
       if(config.throwOnError){ return Promise.reject(error)}
       return error
     })
-  },[config.throwOnError,mountedRef,setData,setError])
+  },[config.throwOnError,setData,setError,safeDispatch])
   return {
     isIdle:state.stat === 'idle',
     isLoading:state.stat === 'loading',
@@ -71,4 +66,10 @@ export const useAsync = <D>(initialState?:State<D>,initialConfig?:typeof default
     reTry,
     ...state
   }
+}
+
+const useSafeDispatch = <T>(dispatch:(...args:T[]) => void) => {
+  const moutedRef = useMountedRef()
+
+  return useCallback((...args:T[]) => (moutedRef.current ? dispatch(...args) : void 0 ),[dispatch,moutedRef])
 }

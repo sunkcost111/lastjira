@@ -11,7 +11,7 @@ import {useUrlQueryParam} from "../../utils/url";
 import {useProjectSeacrhParams} from "./util";
 import {Row} from "../../components/lib";
 
-export const ProjectListScreen = (props:{setProjectModalOpen:(isOpen:boolean) => void})=>{
+export const ProjectListScreen = (props:{projectButton:JSX.Element})=>{
   useDocumentTitle('项目列表',false)
 
   //基本类型和组件状态维护的高级数据类型可以放在依赖里
@@ -22,13 +22,18 @@ export const ProjectListScreen = (props:{setProjectModalOpen:(isOpen:boolean) =>
   return <Container>
     <Row between={true}>
       <h1>项目列表</h1>
-      <Button onClick={() => props.setProjectModalOpen(true)}>创建项目</Button>
+      {props.projectButton}
     </Row>
     <SearchPanel param={param} setParam={setParam} users={users || [] } />
     {
       error ? <Typography.Text type={'danger'}>{error.message}</Typography.Text> : null
     }
-    <List refresh={reTry} dataSource={list || []} users={users || [] } loading={isLoading} setProjectModalOpen={props.setProjectModalOpen} />
+    <List
+      refresh={reTry}
+      dataSource={list || []}
+      users={users || [] }
+      loading={isLoading}
+      projectButton={props.projectButton} />
   </Container>
 }
 ProjectListScreen.whyDidYouRender = false
