@@ -9,20 +9,28 @@ import {useProjects} from "../../utils/project";
 import {useUsers} from "../../utils/user";
 import {useUrlQueryParam} from "../../utils/url";
 import {useProjectSeacrhParams} from "./util";
-import {Row} from "../../components/lib";
+import {ButtonNoPadding, Row} from "../../components/lib";
+import {useDispatch} from "react-redux";
+import {projectListActions} from "./project-list.slice";
 
-export const ProjectListScreen = (props:{projectButton:JSX.Element})=>{
+export const ProjectListScreen = ()=>{
   useDocumentTitle('项目列表',false)
 
   //基本类型和组件状态维护的高级数据类型可以放在依赖里
   const [param,setParam] = useProjectSeacrhParams()
   const {isLoading,error,data:list,reTry} = useProjects(useDebaunce(param,500))
   const {data:users} = useUsers()
+  const dispatch = useDispatch()
 
   return <Container>
     <Row between={true}>
       <h1>项目列表</h1>
-      {props.projectButton}
+      <ButtonNoPadding
+      onClick={()=>dispatch(projectListActions.openProjectModal())}
+      type={'link'}
+      >
+        创建项目
+      </ButtonNoPadding>
     </Row>
     <SearchPanel param={param} setParam={setParam} users={users || [] } />
     {
@@ -32,8 +40,7 @@ export const ProjectListScreen = (props:{projectButton:JSX.Element})=>{
       refresh={reTry}
       dataSource={list || []}
       users={users || [] }
-      loading={isLoading}
-      projectButton={props.projectButton} />
+      loading={isLoading}/>
   </Container>
 }
 ProjectListScreen.whyDidYouRender = false

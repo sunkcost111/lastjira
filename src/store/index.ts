@@ -1,7 +1,8 @@
 import {configureStore} from "@reduxjs/toolkit";
+import {projectListSlice} from "../screens/project-list/project-list.slice";
 
-export const rootReducer = () => {
-
+export const rootReducer =  {
+  projectList:projectListSlice.reducer
 }
 
 export const store = configureStore({
@@ -9,4 +10,5 @@ export const store = configureStore({
 })
 
 export type AppDispatch = typeof store.dispatch
+
 export type RootState = ReturnType<typeof store.getState>
