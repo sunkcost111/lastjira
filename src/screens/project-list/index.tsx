@@ -8,12 +8,13 @@ import {Button, Typography} from 'antd'
 import {useProjects} from "../../utils/project";
 import {useUsers} from "../../utils/user";
 import {useUrlQueryParam} from "../../utils/url";
-import {useProjectSeacrhParams} from "./util";
-import {Row} from "../../components/lib";
+import {useProjectModal, useProjectSeacrhParams} from "./util";
+import {ButtonNoPadding, Row} from "../../components/lib";
 
-export const ProjectListScreen = (props:{projectButton:JSX.Element})=>{
+export const ProjectListScreen = ()=>{
   useDocumentTitle('项目列表',false)
 
+  const {open} = useProjectModal()
   //基本类型和组件状态维护的高级数据类型可以放在依赖里
   const [param,setParam] = useProjectSeacrhParams()
   const {isLoading,error,data:list,reTry} = useProjects(useDebaunce(param,500))
@@ -22,7 +23,12 @@ export const ProjectListScreen = (props:{projectButton:JSX.Element})=>{
   return <Container>
     <Row between={true}>
       <h1>项目列表</h1>
-      {props.projectButton}
+      <ButtonNoPadding
+      type={'link'}
+      onClick={open}
+      >
+        编辑
+      </ButtonNoPadding>
     </Row>
     <SearchPanel param={param} setParam={setParam} users={users || [] } />
     {
@@ -32,8 +38,7 @@ export const ProjectListScreen = (props:{projectButton:JSX.Element})=>{
       refresh={reTry}
       dataSource={list || []}
       users={users || [] }
-      loading={isLoading}
-      projectButton={props.projectButton} />
+      loading={isLoading}/>
   </Container>
 }
 ProjectListScreen.whyDidYouRender = false

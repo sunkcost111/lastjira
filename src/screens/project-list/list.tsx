@@ -7,6 +7,7 @@ import {Link} from "react-router-dom";
 import {Pin} from 'components/pin'
 import {useEditProject} from "../../utils/project";
 import {ButtonNoPadding} from "../../components/lib";
+import {useProjectModal} from "./util";
 //todo 需要把id改为number类型
 export interface Project {
   id:number,
@@ -18,10 +19,10 @@ export interface Project {
 }
 interface ListProps extends TableProps<Project>{
   users:User[],
-  refresh?:() => void,
-  projectButton:JSX.Element
+  refresh?:() => void
 }
 export const List = ({users,...props}:ListProps)=>{
+  const {open} = useProjectModal()
   const {mutate} = useEditProject()
   const pinProject = (id:number) =>(pin:boolean) => mutate({id,pin}).then(props.refresh)
   return <Table
@@ -66,7 +67,12 @@ export const List = ({users,...props}:ListProps)=>{
     render(value,project){
       return <Dropdown overlay={<Menu>
         <Menu.Item key={'edit'}>
-          {props.projectButton}
+          <ButtonNoPadding
+          type={'link'}
+          onClick={open}
+          >
+            编辑
+          </ButtonNoPadding>
         </Menu.Item>
       </Menu>}>
         <ButtonNoPadding type={'link'}>...</ButtonNoPadding>
