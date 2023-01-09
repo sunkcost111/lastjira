@@ -10,6 +10,11 @@ export const useProjectSeacrhParams = () => {
   ] as const
 }
 
+export const useProjectQueryKey = () => {
+  const [params] = useProjectSeacrhParams()
+  return ['projects',params]
+}
+
 export const useProjectModal = () => {
   const [{projectCreate},setProjectCreate] = useUrlQueryParam(['projectCreate'])
   const [{editingProjectId},setEditingProjectId] = useUrlQueryParam([
