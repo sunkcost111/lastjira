@@ -1,49 +1,68 @@
 import {useAsync} from "./useAsync";
 import {Project} from "../screens/project-list/list";
-import {cleanObject, useDebaunce} from "./index";
 import {useHttp} from "./http";
-import {useCallback, useEffect} from "react";
+import {useMutation, useQuery, useQueryClient} from "react-query";
 
 export const useProjects = (param ?: Partial<Project>) => {
   const {run,...result} = useAsync<Project[]>()
   const client = useHttp()
-  const fetchProjects = useCallback(() => client('projects',{data:cleanObject(param || {})}),[client,param])
-
-  useEffect(()=>{
-    run(fetchProjects(),{
-      reTry:fetchProjects
-    })
-  },[param,run,fetchProjects])
-  return result
+  console.log(param)
+  return useQuery<Project[]>(['projects',param],() => client('projects',{data:param}))
 }
 
 //自定义hook必须要在最顶层调用
 export const useEditProject = () => {
-  const {run,...asyncResult} = useAsync()
   const client = useHttp()
-  const mutate = (params:Partial<Project>) => {
-    return run(client(`projects/${params.id}`,{
-      data:params,
-      method:'PATCH'
-    }))
-  }
-  return {
-    mutate,
-    ...asyncResult
-  }
+  const queryClient = useQueryClient()
+  return useMutation((params:Partial<Project>) => client(`projects/${params.id}`,{
+    method:'PATCH',
+    data:params
+  }),{
+    onSuccess:() => queryClient.invalidateQueries('projects')
+  })
+  // const {run,...asyncResult} = useAsync()
+  // const mutate = (params:Partial<Project>) => {
+  //   return run(client(`projects/${params.id}`,{
+  //     data:params,
+  //     method:'PATCH'
+  //   }))
+  // }
+  // return {
+  //   mutate,
+  //   ...asyncResult
+  // }
 }
 
 export const useAddProject = () => {
-  const {run,...asyncResult} = useAsync()
   const client = useHttp()
-  const mutate = (params:Partial<Project>) => {
-    return run(client(`projects/${params.id}`,{
-      data:params,
-      method:'POST'
-    }))
-  }
-  return {
-    mutate,
-    ...asyncResult
-  }
+  const queryClient = useQueryClient()
+  return useMutation((params:Partial<Project>) => client(`projects`,{
+    data:params,
+    method:'POST'
+  }),{
+    //刷新缓存
+    onSuccess:() => queryClient.invalidateQueries('projects')
+  })
+  // const {run,...asyncResult} = useAsync()
+  //
+  // const mutate = (params:Partial<Project>) => {
+  //   return run(client(`projects/${params.id}`,{
+  //     data:params,
+  //     method:'POST'
+  //   }))
+  // }
+  // return {
+  //   mutate,
+  //   ...asyncResult
+  // }
+}
+
+export const useProject = (id?:number) => {
+  const client = useHttp()
+  return useQuery<Project>(
+['project', {id}],
+()=>client(`projects/${id}`),
+{
+    enabled:!!id
+  })
 }

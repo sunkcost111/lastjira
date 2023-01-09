@@ -9,7 +9,7 @@ import {useProjects} from "../../utils/project";
 import {useUsers} from "../../utils/user";
 import {useUrlQueryParam} from "../../utils/url";
 import {useProjectModal, useProjectSeacrhParams} from "./util";
-import {ButtonNoPadding, Row} from "../../components/lib";
+import {ButtonNoPadding, ErrorBox, Row} from "../../components/lib";
 
 export const ProjectListScreen = ()=>{
   useDocumentTitle('项目列表',false)
@@ -17,7 +17,7 @@ export const ProjectListScreen = ()=>{
   const {open} = useProjectModal()
   //基本类型和组件状态维护的高级数据类型可以放在依赖里
   const [param,setParam] = useProjectSeacrhParams()
-  const {isLoading,error,data:list,reTry} = useProjects(useDebaunce(param,500))
+  const {isLoading,error,data:list} = useProjects(useDebaunce(param,500))
   const {data:users} = useUsers()
 
   return <Container>
@@ -27,15 +27,12 @@ export const ProjectListScreen = ()=>{
       type={'link'}
       onClick={open}
       >
-        编辑
+        创建
       </ButtonNoPadding>
     </Row>
     <SearchPanel param={param} setParam={setParam} users={users || [] } />
-    {
-      error ? <Typography.Text type={'danger'}>{error.message}</Typography.Text> : null
-    }
+    <ErrorBox error={error}/>
     <List
-      refresh={reTry}
       dataSource={list || []}
       users={users || [] }
       loading={isLoading}/>

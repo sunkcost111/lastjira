@@ -4,18 +4,19 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals'
-import {loadDevTools} from 'jira-dev-tool'
+import {loadServer,DevTools} from 'jira-dev-tool'
 import 'antd/dist/antd.css'
 import {AppProviders} from "context/index"
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-loadDevTools(() =>{
+loadServer(() =>{
   root.render(
     <React.StrictMode>
       <AppProviders>
-       <App />
+        <DevTools/>
+        <App />
       </AppProviders>
     </React.StrictMode>
   )
