@@ -58,6 +58,8 @@ const Container = styled.div`
   height: 100vh;
 `
 const Main = styled.div`
+  display: flex;
+  overflow: hidden;
 `
 //grid-area是给子元素起名字
 const Header = styled(Row)`
