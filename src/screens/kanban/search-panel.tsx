@@ -19,7 +19,7 @@ export const SearchPanel = () => {
   }
   return <Row gap={true} marginBottom={4}>
     <Input
-      style={{marginBottom:'20rem'}}
+      style={{width:'20rem'}}
       placeholder={'任务名'}
       value={searchParams.name}
       onChange={evt => {setSearchParam({name:evt.target.value}
@@ -30,6 +30,7 @@ export const SearchPanel = () => {
       onChange={value => {setSearchParam({processorId:value})}}/>
     <TaskTypeSelect defaultOptionName={'类型'} value={searchParams.typeId}
                     onChange={value => setSearchParam({typeId:value})} />
-      <Button onClick={reset}>清除筛选器</Button>
+
+    <Button onClick={reset}>清除筛选器</Button>
   </Row>
 }

@@ -1,15 +1,12 @@
 import React from 'react'
 import {SearchPanel} from "./search-panel";
 import {List} from "./list";
-import {useEffect, useState} from "react";
 import {cleanObject, useDebaunce, useDocumentTitle, useMount} from "../../utils";
 import styled from "@emotion/styled";
-import {Button, Typography} from 'antd'
 import {useProjects} from "../../utils/project";
 import {useUsers} from "../../utils/user";
-import {useUrlQueryParam} from "../../utils/url";
 import {useProjectModal, useProjectSeacrhParams} from "./util";
-import {ButtonNoPadding, ErrorBox, Row} from "../../components/lib";
+import {ButtonNoPadding, ErrorBox, Row, ScreenContainer} from "../../components/lib";
 
 export const ProjectListScreen = ()=>{
   useDocumentTitle('项目列表',false)
@@ -20,7 +17,7 @@ export const ProjectListScreen = ()=>{
   const {isLoading,error,data:list} = useProjects(useDebaunce(param,500))
   const {data:users} = useUsers()
 
-  return <Container>
+  return <ScreenContainer>
     <Row between={true}>
       <h1>项目列表</h1>
       <ButtonNoPadding
@@ -36,10 +33,6 @@ export const ProjectListScreen = ()=>{
       dataSource={list || []}
       users={users || [] }
       loading={isLoading}/>
-  </Container>
+  </ScreenContainer>
 }
 ProjectListScreen.whyDidYouRender = false
-
-const Container = styled.div`
-  padding: 3.2rem;
-`

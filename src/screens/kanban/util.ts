@@ -1,7 +1,9 @@
 import {useLocation} from "react-router";
 import {useProject} from "../../utils/project";
 import {useUrlQueryParam} from "../../utils/url";
-import {useMemo} from "react";
+import {useCallback, useMemo} from "react";
+import {useTask, useTasks} from "../../utils/task";
+import {useDebaunce} from "../../utils";
 
 export const useProjectIdInUrl = () => {
   const {pathname} = useLocation()
@@ -28,3 +30,21 @@ export const useTasksSearchParams = () => {
 }
 
 export const useTasksQueryKey  = () => ['tasks',useTasksSearchParams()]
+
+export const useTaskModal = () => {
+  const [{editingTaskId},setEditingTaskId] = useUrlQueryParam(['editingTaskId'])
+  const {data:editingTask,isLoading} = useTask(Number(editingTaskId))
+  const startEdit = useCallback((id:number) => {
+    setEditingTaskId({editingTaskId:id})
+  },[setEditingTaskId])
+  const close = useCallback(() => {
+    setEditingTaskId({editingTaskId:''})
+  },[])
+  return {
+    startEdit,
+    close,
+    isLoading,
+    editingTaskId,
+    editingTask
+  }
+}
