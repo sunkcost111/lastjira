@@ -1,15 +1,9 @@
 import {User} from "../screens/project-list/search-panel";
 import {useAsync} from "./useAsync";
 import {useHttp} from "./http";
-import {useEffect} from "react";
-import {cleanObject} from "./index";
+import {useQuery} from "react-query";
 
-export const useUsers = (param?:Partial<User>) => {
-  const {run,...result} = useAsync<User[]>()
-
+export const useUsers = (param ?: Partial<User>) => {
   const client = useHttp()
-  useEffect(()=>{
-    run(client('users',{data:cleanObject(param || {})}))
-  },[param])
-  return result
+  return useQuery<User[]>(['users',param],() => client('users',{data:param}))
 }
