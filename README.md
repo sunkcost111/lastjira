@@ -2,7 +2,7 @@
 
 **IDE:WebStorm (还是喜欢 VSCode，但是写 TS WebStorm 真的顺!)**
 
-**技术栈:Antd CSS in JS Emotion react-redux react-query CRACO Why Did Render**
+**技术栈:Antd CSS in JS Emotion react-redux react-query CRACO Why Did Render React-beautiful-dnd**
 
 一。初步开发阶段：使用 json-server 模拟 mock 数据，辅助开发（30s 就可以部署后端真不是吹得呀)
 后期废除，使用本地后端，插件公开，本地的 mock 数据集，localStorage，以及 react-query.
@@ -21,5 +21,6 @@
 
             useMemo 和 useCallback的hook应用（！important）
 
+三。一些深刻认知
 
-
+        包括react-query的使用
